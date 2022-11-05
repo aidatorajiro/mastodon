@@ -193,9 +193,7 @@
 
 
 
-SocksPort 9050
 SocksPort tor:9050
-
 
 HiddenServiceDir /var/lib/tor/hidden_service
 HiddenServicePort 80 web:3000

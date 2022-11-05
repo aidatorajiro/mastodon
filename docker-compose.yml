@@ -113,7 +113,13 @@ services:
     volumes:
       - ./priv-config:/opt/config
     networks:
+      - external_network # TODO: technically, it have to be removed, but if I remove it, it won't be able to access tor:9050
       - internal_network
+  
+  postfix:
+    image: mailu/postfix:master
+    networks:
+       - internal_network
 
 networks:
   external_network:
