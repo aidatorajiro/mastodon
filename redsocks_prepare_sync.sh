@@ -22,6 +22,10 @@ iptables -t nat -A OUTPUT -p tcp -j REDSOCKS
 iptables -t nat -A PREROUTING -p tcp -j REDSOCKS
 
 dnsproxy -l 127.0.0.1 -p 53 -u https://8.8.8.8/dns-query &
+cp /etc/resolv.conf /tmp/tmp-resolv.conf
+echo "nameserver 127.0.0.1" >> /etc/resolv.conf
+cat /tmp/tmp-resolv.conf >> /etc/resolv.conf
+rm /tmp/tmp-resolv.conf
 
 #iptables -t nat -A REDSOCKS -p udp -j REDIRECT --to-ports 10053
 #iptables -t nat -A OUTPUT -p udp -j REDSOCKS
