@@ -89,7 +89,7 @@ RUN apt-get update && \
   apt-get -y --no-install-recommends install \
 	  libssl1.1 libpq5 imagemagick ffmpeg libjemalloc2 \
 	  libicu66 libidn11 libyaml-0-2 \
-	  file ca-certificates tzdata libreadline8 gcc tini apt-utils && \
+	  file ca-certificates tzdata libreadline8 gcc tini apt-utils redsocks iptables sudo && \
 	ln -s /opt/mastodon /mastodon && \
 	gem install bundler && \
 	rm -rf /var/cache && \
@@ -106,6 +106,11 @@ ENV NODE_ENV="production"
 # Tell rails to serve static files
 ENV RAILS_SERVE_STATIC_FILES="true"
 ENV BIND="0.0.0.0"
+
+ADD redsocks_prepare.sh /bin/redsocks_prepare.sh
+
+RUN echo "mastodon ALL=(root) NOPASSWD: /bin/redsocks_prepare.sh" >> /etc/sudoers
+RUN chmod +x /bin/redsocks_prepare.sh
 
 # Set the run user
 USER mastodon

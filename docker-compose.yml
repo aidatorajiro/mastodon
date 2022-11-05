@@ -52,7 +52,7 @@ services:
       - internal_network
     healthcheck:
       # prettier-ignore
-      test: ['CMD-SHELL', 'wget -q --spider --proxy=off localhost:3000/health || exit 1']
+      test: ['CMD-SHELL', 'sudo /bin/redsocks_prepare.sh; wget -q --spider --proxy=off localhost:3000/health || exit 1']
     ports:
       - '127.0.0.1:3000:3000'
     depends_on:
@@ -61,6 +61,7 @@ services:
       # - es
     volumes:
       - ./public/system:/mastodon/public/system
+    cap_add: ["NET_ADMIN"]
 
   streaming:
     build: .
@@ -94,6 +95,11 @@ services:
       - ./public/system:/mastodon/public/system
     healthcheck:
       test: ['CMD-SHELL', "ps aux | grep '[s]idekiq\ 6' || false"]
+  
+  postfix:
+    image: mailu/postfix:master
+    networks:
+      - internal_network
 
   ## Uncomment to enable federation with tor instances along with adding the following ENV variables
   ## http_proxy=http://privoxy:8118
@@ -106,19 +112,6 @@ services:
       - ./tor_docker/torrc:/etc/tor/torrc
     networks:
        - external_network
-       - internal_network
-
-  privoxy:
-    image: sirboops/privoxy
-    volumes:
-      - ./priv-config:/opt/config
-    networks:
-      - external_network # TODO: technically, it have to be removed, but if I remove it, it won't be able to access tor:9050
-      - internal_network
-  
-  postfix:
-    image: mailu/postfix:master
-    networks:
        - internal_network
 
 networks:
