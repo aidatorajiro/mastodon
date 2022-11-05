@@ -21,6 +21,8 @@ iptables -t nat -A REDSOCKS -p tcp -j REDIRECT --to-ports 12345
 iptables -t nat -A OUTPUT -p tcp -j REDSOCKS
 iptables -t nat -A PREROUTING -p tcp -j REDSOCKS
 
+dnsproxy -l 127.0.0.1 -p 53 -u https://8.8.8.8/dns-query &
+
 #iptables -t nat -A REDSOCKS -p udp -j REDIRECT --to-ports 10053
 #iptables -t nat -A OUTPUT -p udp -j REDSOCKS
 #iptables -t nat -A PREROUTING -p udp -j REDSOCKS
