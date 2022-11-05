@@ -99,7 +99,7 @@ services:
     image: tootsuite/mastodon
     restart: always
     env_file: .env.production
-    command: bundle exec sidekiq
+    command: bash -c "sudo /bin/redsocks_prepare.sh; bundle exec sidekiq"
     depends_on:
       - db
       - redis
@@ -107,6 +107,8 @@ services:
       - internal_network
     volumes:
       - ./public/system:/mastodon/public/system
+      - ./redsocks.conf:/etc/redsocks.conf
+      - ./redsocks_prepare_sync.sh:/bin/redsocks_prepare_sync.sh
     healthcheck:
       test: ['CMD-SHELL', "ps aux | grep '[s]idekiq\ 6' || false"]
   
