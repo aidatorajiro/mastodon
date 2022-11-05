@@ -20,10 +20,6 @@ RUN apt install -y tor deb.torproject.org-keyring
 
 RUN apt install -y obfs4proxy
 
-ADD torrc .
-
-RUN cp torrc /etc/tor/torrc
-
 ADD hidden_service /var/lib/tor/hidden_service
 
 RUN chmod -R 700 /var/lib/tor/hidden_service

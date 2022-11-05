@@ -105,6 +105,8 @@ services:
     build: ./tor_docker
     depends_on:
       - web # tor requires the hostname of web
+    volumes:
+      - ./tor_docker/torrc:/etc/tor/torrc
     networks:
        - external_network
        - internal_network
