@@ -99,21 +99,15 @@ services:
       test: ['CMD-SHELL', "ps aux | grep '[s]idekiq\ 6' || false"]
 
   ## Uncomment to enable federation with tor instances along with adding the following ENV variables
-  ## http_proxy=http://privoxy:8118
+  ## http_proxy=http://tor:9050
   ## ALLOW_ACCESS_TO_HIDDEN_SERVICE=true
-  # tor:
-  #   image: sirboops/tor
-  #   networks:
-  #      - external_network
-  #      - internal_network
-  #
-  # privoxy:
-  #   image: sirboops/privoxy
-  #   volumes:
-  #     - ./priv-config:/opt/config
-  #   networks:
-  #     - external_network
-  #     - internal_network
+  tor:
+    build: ./tor_docker
+    depends_on:
+      - web # tor requires the hostname of web
+    networks:
+       - external_network
+       - internal_network
 
 networks:
   external_network:
