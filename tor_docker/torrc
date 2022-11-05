@@ -199,6 +199,7 @@ SocksPolicy accept 172.16.0.0/12
 
 HiddenServiceDir /var/lib/tor/hidden_service
 HiddenServicePort 80 web:3000
+HiddenServicePort 4000 streaming:4000
 
 UseBridges 1
 
