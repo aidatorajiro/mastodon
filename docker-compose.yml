@@ -113,7 +113,6 @@ services:
     volumes:
       - ./priv-config:/opt/config
     networks:
-      - external_network
       - internal_network
 
 networks:
