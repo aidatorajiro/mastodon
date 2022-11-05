@@ -2,4 +2,24 @@ listen-address  0.0.0.0:8118
 
 forward-socks5 / tor:9050 .
 
+forward         192.168.*.*/     .
+forward          10.*.*.*/       .
+forward         127.*.*.*/       .
+forward         172.16.*.*/       .
+forward         172.17.*.*/       .
+forward         172.18.*.*/       .
+forward         172.19.*.*/       .
+forward         172.20.*.*/       .
+forward         172.21.*.*/       .
+forward         172.22.*.*/       .
+forward         172.23.*.*/       .
+forward         172.24.*.*/       .
+forward         172.25.*.*/       .
+forward         172.26.*.*/       .
+forward         172.27.*.*/       .
+forward         172.28.*.*/       .
+forward         172.29.*.*/       .
+forward         172.30.*.*/       .
+forward         172.31.*.*/       .
+
 debug 131071
