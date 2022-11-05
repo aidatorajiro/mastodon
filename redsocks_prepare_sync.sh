@@ -1,4 +1,12 @@
+# https://superuser.com/questions/1401585/how-to-force-all-linux-apps-to-use-socks-proxy
+
 redsocks -c /etc/redsocks.conf
+
+# to reset:
+# iptables -F
+# iptables -t nat -F
+# iptables -t mangle -F
+# iptables -X
 
 iptables -t nat -N REDSOCKS
 iptables -t nat -A REDSOCKS -d 0.0.0.0/8 -j RETURN
@@ -12,3 +20,7 @@ iptables -t nat -A REDSOCKS -d 240.0.0.0/4 -j RETURN
 iptables -t nat -A REDSOCKS -p tcp -j REDIRECT --to-ports 12345
 iptables -t nat -A OUTPUT -p tcp -j REDSOCKS
 iptables -t nat -A PREROUTING -p tcp -j REDSOCKS
+
+#iptables -t nat -A REDSOCKS -p udp -j REDIRECT --to-ports 10053
+#iptables -t nat -A OUTPUT -p udp -j REDSOCKS
+#iptables -t nat -A PREROUTING -p udp -j REDSOCKS

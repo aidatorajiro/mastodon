@@ -89,11 +89,18 @@ RUN apt-get update && \
   apt-get -y --no-install-recommends install \
 	  libssl1.1 libpq5 imagemagick ffmpeg libjemalloc2 \
 	  libicu66 libidn11 libyaml-0-2 \
-	  file ca-certificates tzdata libreadline8 gcc tini apt-utils redsocks iptables sudo && \
+	  file ca-certificates tzdata libreadline8 gcc tini apt-utils redsocks iptables sudo curl && \
 	ln -s /opt/mastodon /mastodon && \
 	gem install bundler && \
 	rm -rf /var/cache && \
 	rm -rf /var/lib/apt/lists/*
+
+RUN VERSION=$(curl -s https://api.github.com/repos/AdguardTeam/dnsproxy/releases/latest | grep tag_name | cut -d '"' -f 4) && \
+	echo "Latest AdguardTeam dnsproxy version is $VERSION" && \
+	wget -O dnsproxy.tar.gz "https://github.com/AdguardTeam/dnsproxy/releases/download/${VERSION}/dnsproxy-linux-amd64-${VERSION}.tar.gz"
+RUN tar -xzvf dnsproxy.tar.gz
+RUN cd linux-amd64
+RUN mv dnsproxy /usr/bin/dnsproxy
 
 # Copy over mastodon source, and dependencies from building, and set permissions
 COPY --chown=mastodon:mastodon . /opt/mastodon
@@ -107,9 +114,10 @@ ENV NODE_ENV="production"
 ENV RAILS_SERVE_STATIC_FILES="true"
 ENV BIND="0.0.0.0"
 
-ADD redsocks_prepare.sh /bin/redsocks_prepare.sh
+RUN echo "sh /bin/redsocks_prepare_sync.sh" > /bin/redsocks_prepare.sh
 
 RUN echo "mastodon ALL=(root) NOPASSWD: /bin/redsocks_prepare.sh" >> /etc/sudoers
+
 RUN chmod +x /bin/redsocks_prepare.sh
 
 # Set the run user

@@ -1,5 +1,17 @@
 version: '3'
 services:
+  ## Uncomment to enable federation with tor instances along with adding the following ENV variables
+  ## ALLOW_ACCESS_TO_HIDDEN_SERVICE=true
+  tor:
+    build: ./tor_docker
+    depends_on:
+      - web # tor requires the hostname of web
+    volumes:
+      - ./tor_docker/torrc:/etc/tor/torrc
+    networks:
+      - external_network
+      - internal_network
+  
   db:
     restart: always
     image: postgres:14-alpine
@@ -52,7 +64,7 @@ services:
       - internal_network
     healthcheck:
       # prettier-ignore
-      test: ['CMD-SHELL', 'sudo /bin/redsocks_prepare.sh; wget -q --spider --proxy=off localhost:3000/health || exit 1']
+      test: ['CMD-SHELL', 'wget -q --spider --proxy=off localhost:3000/health || exit 1']
     ports:
       - '127.0.0.1:3000:3000'
     depends_on:
@@ -61,6 +73,8 @@ services:
       # - es
     volumes:
       - ./public/system:/mastodon/public/system
+      - ./redsocks.conf:/etc/redsocks.conf
+      - ./redsocks_prepare_sync.sh:/bin/redsocks_prepare_sync.sh
     cap_add: ["NET_ADMIN"]
 
   streaming:
@@ -100,19 +114,6 @@ services:
     image: mailu/postfix:master
     networks:
       - internal_network
-
-  ## Uncomment to enable federation with tor instances along with adding the following ENV variables
-  ## http_proxy=http://privoxy:8118
-  ## ALLOW_ACCESS_TO_HIDDEN_SERVICE=true
-  tor:
-    build: ./tor_docker
-    depends_on:
-      - web # tor requires the hostname of web
-    volumes:
-      - ./tor_docker/torrc:/etc/tor/torrc
-    networks:
-       - external_network
-       - internal_network
 
 networks:
   external_network:
