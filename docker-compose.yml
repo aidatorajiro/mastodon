@@ -111,6 +111,7 @@ services:
       - ./redsocks_prepare_sync.sh:/bin/redsocks_prepare_sync.sh
     healthcheck:
       test: ['CMD-SHELL', "ps aux | grep '[s]idekiq\ 6' || false"]
+    cap_add: ["NET_ADMIN"]
   
   postfix:
     image: mailu/postfix:master
