@@ -107,6 +107,7 @@ services:
       - '127.0.0.1:4000:4000'
     volumes:
       - ./redsocks_prepare_sync.sh:/bin/redsocks_prepare_sync.sh
+    cap_add: ["NET_ADMIN"]
     depends_on:
       - db
       - redis
@@ -129,6 +130,13 @@ services:
     healthcheck:
       test: ['CMD-SHELL', "ps aux | grep '[s]idekiq\ 6' || false"]
     cap_add: ["NET_ADMIN"]
+  
+  privoxy:
+    image: sirboops/privoxy
+    volumes:
+      - ./priv-config:/opt/config
+    networks:
+      - internal_network
   
   postfix:
     build: ./postfix
