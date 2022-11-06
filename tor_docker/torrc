@@ -205,8 +205,10 @@ UseBridges 1
 
 ClientTransportPlugin obfs4 exec /usr/bin/obfs4proxy managed
 
+# For those who are not allowed to access Tor Network...
 # Visit https://bridges.torproject.org/bridges/?transport=obfs4 to get these addresses
 # (requires human verification)
+# Or through the Tor Browser!
 
 bridge obfs4 172.104.188.28:1194 859F069E55CCC3A99006D54A1E5FBF79A00C5AB5 cert=vljbhknQ0O+Cmpqus/asEVv84Q9mOzVt8Vv5SBnlM7c2VASvOvbHlTiFzXlS9FHAetScMg iat-mode=0
 

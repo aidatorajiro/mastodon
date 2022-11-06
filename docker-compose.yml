@@ -128,7 +128,7 @@ services:
     cap_add: ["NET_ADMIN"]
   
   postfix:
-    image: mailu/postfix:master
+    build: ./postfix
     networks:
       - internal_network
 
