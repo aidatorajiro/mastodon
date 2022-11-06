@@ -135,6 +135,7 @@ services:
     restart: always
     command: bash -c "sh /bin/redsocks_prepare_sync.sh; postfix start; sleep infinity"
     volumes:
+      - ./redsocks.conf:/etc/redsocks.conf
       - ./redsocks_prepare_sync.sh:/bin/redsocks_prepare_sync.sh
     networks:
       - internal_network
