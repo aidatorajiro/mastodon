@@ -6,6 +6,7 @@ version: '3'
 services:
   tor:
     build: ./tor_docker
+    restart: always
     depends_on:
       - web # tor requires the hostname of web
     volumes:
@@ -96,7 +97,7 @@ services:
     image: tootsuite/mastodon
     restart: always
     env_file: .env.production
-    command: node ./streaming
+    command: bash -c "sudo /bin/redsocks_prepare.sh; node ./streaming"
     networks:
       - internal_network
     healthcheck:
@@ -104,6 +105,8 @@ services:
       test: ['CMD-SHELL', 'wget -q --spider --proxy=off localhost:4000/api/v1/streaming/health || exit 1']
     ports:
       - '127.0.0.1:4000:4000'
+    volumes:
+      - ./redsocks_prepare_sync.sh:/bin/redsocks_prepare_sync.sh
     depends_on:
       - db
       - redis
@@ -129,8 +132,15 @@ services:
   
   postfix:
     build: ./postfix
+    restart: always
+    command: bash -c "sh /bin/redsocks_prepare_sync.sh; postfix start; sleep infinity"
+    volumes:
+      - ./redsocks_prepare_sync.sh:/bin/redsocks_prepare_sync.sh
     networks:
       - internal_network
+    healthcheck:
+      test: ['CMD-SHELL', "bash -c \"sleep 1; echo QUIT\" | telnet localhost 25 | grep -i \"^220\""]
+    cap_add: ["NET_ADMIN"]
 
 networks:
   external_network:

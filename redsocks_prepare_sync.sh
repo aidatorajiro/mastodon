@@ -24,6 +24,10 @@ iptables -t nat -A PREROUTING -p tcp -j REDSOCKS
 dnsproxy -l 127.0.0.1 -p 53 -u https://8.8.8.8/dns-query &
 echo "nameserver 127.0.0.1" >> /etc/resolv.conf
 
+if test -d /var/spool/postfix/etc; then
+  cp /etc/resolv.conf /var/spool/postfix/etc/resolv.conf
+fi
+
 #iptables -t nat -A REDSOCKS -p udp -j REDIRECT --to-ports 10053
 #iptables -t nat -A OUTPUT -p udp -j REDSOCKS
 #iptables -t nat -A PREROUTING -p udp -j REDSOCKS
