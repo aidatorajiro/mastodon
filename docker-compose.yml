@@ -11,6 +11,8 @@ services:
       - web # tor requires the hostname of web
     volumes:
       - ./tor_docker/torrc:/etc/tor/torrc
+    healthcheck:
+      test: ['CMD-SHELL', "pidof tor"]
     networks:
       - external_network
       - internal_network
@@ -80,8 +82,6 @@ services:
     healthcheck:
       # prettier-ignore
       test: ['CMD-SHELL', 'wget -q --spider --proxy=off localhost:3000/health || exit 1']
-    ports:
-      - '127.0.0.1:3000:3000'
     depends_on:
       - db
       - redis
@@ -103,8 +103,6 @@ services:
     healthcheck:
       # prettier-ignore
       test: ['CMD-SHELL', 'wget -q --spider --proxy=off localhost:4000/api/v1/streaming/health || exit 1']
-    ports:
-      - '127.0.0.1:4000:4000'
     volumes:
       - ./redsocks_prepare_sync.sh:/bin/redsocks_prepare_sync.sh
     cap_add: ["NET_ADMIN"]
@@ -135,6 +133,8 @@ services:
     image: sirboops/privoxy
     volumes:
       - ./priv-config:/opt/config
+    healthcheck:
+      test: ['CMD-SHELL', "pidof privoxy"]
     networks:
       - internal_network
   
@@ -148,7 +148,9 @@ services:
     networks:
       - internal_network
     healthcheck:
-      test: ['CMD-SHELL', "bash -c \"sleep 1; echo QUIT\" | telnet localhost 25 | grep -i \"^220\""]
+      interval: 2m
+      timeout: 2m
+      test: ['CMD-SHELL', "bash -c \"sleep 60; echo QUIT\" | telnet localhost 25 | grep -i \"^220\""]
     cap_add: ["NET_ADMIN"]
 
 networks:
