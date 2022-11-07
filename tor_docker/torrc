@@ -197,8 +197,18 @@ SocksPort 0.0.0.0:9050
 
 SocksPolicy accept 172.16.0.0/12
 
+VirtualAddrNetworkIPv4 10.192.0.0/10
+
+AutomapHostsOnResolve 1
+
+TransPort 0.0.0.0:9040
+
+DNSPort 0.0.0.0:53
+
 HiddenServiceDir /var/lib/tor/hidden_service
+
 HiddenServicePort 80 web:3000
+
 HiddenServicePort 4000 streaming:4000
 
 UseBridges 1
