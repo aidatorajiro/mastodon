@@ -32,8 +32,6 @@
    ```
 5. docker-compose build
 6. docker-compose run
-Please Add following to .env.production
-ALLOW_ACCESS_TO_HIDDEN_SERVICE=true
 
 <h1><picture>
   <source media="(prefers-color-scheme: dark)" srcset="./lib/assets/wordmark.dark.png?raw=true">
