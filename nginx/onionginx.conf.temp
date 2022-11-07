@@ -137,7 +137,7 @@ server {
     tcp_nodelay on;
   }
 
-  error_page 404 500 501 502 503 504 /500.html;
+  error_page 404 500 501 502 503 504 /50x.html;
 }
 
 server {
@@ -272,5 +272,5 @@ server {
     tcp_nodelay on;
   }
 
-  error_page 404 500 501 502 503 504 /500.html;
+  error_page 404 500 501 502 503 504 /50x.html;
 }
