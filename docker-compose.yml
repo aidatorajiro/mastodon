@@ -1,6 +1,3 @@
-# Please Add following to .env.production
-# ALLOW_ACCESS_TO_HIDDEN_SERVICE=true
-
 version: '3'
 services:
   tor:
