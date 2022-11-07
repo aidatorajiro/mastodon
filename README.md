@@ -4,6 +4,7 @@
 2. Put the directory designated by HiddenServiceDir on `tor_docker`.
 3. sh webconfgen.sh
 4. Create Redis and Postgres database and .env.production (for example, follow https://peterbabic.dev/blog/running-mastodon-with-docker-compose/)
+   
    **IMPORTANT: in .env.production, please set ALLOW_ACCESS_TO_HIDDEN_SERVICE=true**
 
    .env.production file sample here:
