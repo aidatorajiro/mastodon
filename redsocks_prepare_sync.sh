@@ -25,6 +25,8 @@ iptables -t nat -A PREROUTING -p tcp -j REDSOCKS
 # dnsproxy -l 127.0.0.1 -p 53 -u https://8.8.8.8/dns-query &
 # echo "nameserver 127.0.0.1" >> /etc/resolv.conf
 
+echo "nameserver $(dig +short tor)" >> /etc/resolv.conf
+
 if test -d /var/spool/postfix/etc; then
   cp /etc/resolv.conf /var/spool/postfix/etc/resolv.conf
 fi
