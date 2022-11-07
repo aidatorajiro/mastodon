@@ -207,11 +207,11 @@ DNSPort 0.0.0.0:53
 
 HiddenServiceDir /var/lib/tor/hidden_service
 
-# HiddenServicePort 80 nginx:80
+HiddenServicePort 80 nginx:80
 
-# HiddenServicePort 443 nginx:443
+HiddenServicePort 443 nginx:443
 
-HiddenServicePort 443 web:3000
+# HiddenServicePort 443 web:3000
 
 UseBridges 1
 
