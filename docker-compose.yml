@@ -1,5 +1,4 @@
 # Please Add following to .env.production
-# STREAMING_API_BASE_URL=ws://<onion address>:4000
 # ALLOW_ACCESS_TO_HIDDEN_SERVICE=true
 
 version: '3'
