@@ -76,7 +76,7 @@ services:
     image: tootsuite/mastodon
     restart: always
     env_file: .env.production
-    command: bash -c "sudo /bin/redsocks_prepare.sh; rm -f /mastodon/tmp/pids/server.pid; bundle exec rails s -p 3000"
+    command: bash -c "sudo /bin/redsocks_prepare.sh; rm -f /mastodon/tmp/pids/server.pid; bundle exec rails s -b 'ssl://0.0.0.0:3000?key=ssl_certificate/privatekey.pem&cert=ssl_certificate/certificate.pem'"
     networks:
       - internal_network
     healthcheck:
@@ -90,6 +90,7 @@ services:
       - ./public/system:/mastodon/public/system
       - ./redsocks.conf:/etc/redsocks.conf
       - ./redsocks_prepare_sync.sh:/bin/redsocks_prepare_sync.sh
+      - ./ssl_certificate:/mastodon/ssl_certificate
     cap_add: ["NET_ADMIN"]
 
   streaming:
@@ -143,6 +144,11 @@ services:
       timeout: 2m
       test: ['CMD-SHELL', "bash -c \"sleep 60; echo QUIT\" | telnet localhost 25 | grep -i \"^220\""]
     cap_add: ["NET_ADMIN"]
+  
+  nginx:
+    image: nginx
+    networks:
+      - internal_network
 
 networks:
   external_network:
