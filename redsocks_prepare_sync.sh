@@ -26,6 +26,7 @@ if test -d /var/spool/postfix/etc; then
   dnsproxy -l 127.0.0.1 -p 53 -u https://8.8.8.8/dns-query &
   echo "nameserver 127.0.0.1" >> /etc/resolv.conf
   cp /etc/resolv.conf /var/spool/postfix/etc/resolv.conf
+  postalias /etc/aliases
 else
   echo "nameserver $(dig +short tor)" >> /etc/resolv.conf
 fi

@@ -104,6 +104,7 @@ services:
       # prettier-ignore
       test: ['CMD-SHELL', 'wget -q --spider --proxy=off localhost:4000/api/v1/streaming/health || exit 1']
     volumes:
+      - ./redsocks.conf:/etc/redsocks.conf
       - ./redsocks_prepare_sync.sh:/bin/redsocks_prepare_sync.sh
     cap_add: ["NET_ADMIN"]
     depends_on:
@@ -134,6 +135,8 @@ services:
     restart: always
     command: bash -c "sh /bin/redsocks_prepare_sync.sh; postfix start; sleep infinity"
     volumes:
+      - ./postfix/main.cf:/etc/postfix/main.cf
+      - ./postfix/aliases:/etc/aliases
       - ./redsocks.conf:/etc/redsocks.conf
       - ./redsocks_prepare_sync.sh:/bin/redsocks_prepare_sync.sh
     networks:
@@ -146,6 +149,7 @@ services:
   
   nginx:
     image: nginx
+    restart: always
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./nginx/onionginx.conf:/etc/nginx/conf.d/onionginx.conf

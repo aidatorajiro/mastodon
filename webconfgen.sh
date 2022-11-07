@@ -12,3 +12,10 @@ rm ssl.conf
 cd ../nginx
 
 cat onionginx.conf.temp | sed "s/<<<domain name>>>/$ONIONAME/" > onionginx.conf
+
+cd ../postfix
+
+echo $ONIONAME > hostname
+
+cat main.cf.temp | sed "s/<<<domain name>>>/$ONIONAME/" > main.cf
+

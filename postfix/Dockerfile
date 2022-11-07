@@ -16,8 +16,4 @@ ADD hostname hostname
 
 RUN cp hostname /etc/mailname
 
-ADD main.cf /etc/postfix/main.cf
-
-RUN sed -i "s/<<<thisismyhostname>>>/`cat /etc/mailname`/" /etc/postfix/main.cf
-
 ENTRYPOINT [ "/usr/bin/tini", "--" ]

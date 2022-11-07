@@ -1,0 +1,8 @@
+# postmaster
+postmaster: root
+# SSL cert email
+a: root
+# mastodon admin
+admin: root
+# mastodon notification
+notification: root
