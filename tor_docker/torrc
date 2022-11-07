@@ -201,9 +201,9 @@ VirtualAddrNetworkIPv4 10.192.0.0/10
 
 AutomapHostsOnResolve 1
 
-TransPort 0.0.0.0:9040
-
 DNSPort 0.0.0.0:53
+
+# TransPort 0.0.0.0:9040
 
 HiddenServiceDir /var/lib/tor/hidden_service
 
