@@ -130,6 +130,8 @@ services:
     build: ./postfix
     restart: always
     command: bash -c "sh /bin/redsocks_prepare_sync.sh; postfix start; sleep infinity"
+    environment:
+      - MAILSERVICE=yeah
     volumes:
       - ./postfix/main.cf:/etc/postfix/main.cf
       - ./postfix/aliases:/etc/aliases
@@ -152,6 +154,21 @@ services:
       - ./ssl_certificate:/etc/ssl_certificate
     networks:
       - internal_network
+  
+  dnsservice:
+    restart: always
+    tty: true
+    build: ./dnsservice
+    environment:
+      - DNSSERVICE=yeah
+    command: bash -c "LOCAL_ADDR=$$(head -n 1 /etc/resolv.conf | awk '{print $$2}'); TOR_ADDR=$(dig +short tor); sh /bin/redsocks_prepare_sync.sh; python3 proxy.py --upstream_local $$LOCAL_ADDR --upstream_tor $$TOR_ADDR --upstream_surface 127.0.0.1:5300 --timeout 120"
+    volumes:
+      - ./dnsservice/proxy.py:/proxy.py
+      - ./redsocks.conf:/etc/redsocks.conf
+      - ./redsocks_prepare_sync.sh:/bin/redsocks_prepare_sync.sh
+    networks:
+      - internal_network
+    cap_add: ["NET_ADMIN"]
 
 networks:
   external_network:

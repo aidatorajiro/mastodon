@@ -22,13 +22,15 @@ iptables -t nat -A REDSOCKS -p tcp -j REDIRECT --to-ports 12345
 iptables -t nat -A OUTPUT -p tcp -j REDSOCKS
 iptables -t nat -A PREROUTING -p tcp -j REDSOCKS
 
-if test -d /var/spool/postfix/etc; then
-  dnsproxy -l 127.0.0.1 -p 53 -u https://8.8.8.8/dns-query &
-  echo "nameserver 127.0.0.1" >> /etc/resolv.conf
+echo "nameserver $(dig +short dnsservice)" > /etc/resolv.conf
+
+if test ${MAILSERVICE}; then
   cp /etc/resolv.conf /var/spool/postfix/etc/resolv.conf
   postalias /etc/aliases
-else
-  echo "nameserver $(dig +short tor)" >> /etc/resolv.conf
+fi
+
+if test ${DNSSERVICE}; then
+  dnsproxy -l 127.0.0.1 -p 5300 -u https://8.8.8.8/dns-query &
 fi
 
 #iptables -t nat -A REDSOCKS -p udp -j REDIRECT --to-ports 10053

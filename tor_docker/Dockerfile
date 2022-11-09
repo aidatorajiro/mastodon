@@ -1,8 +1,6 @@
 FROM ubuntu:jammy
 
-RUN apt update
-
-RUN apt install -y apt-transport-https lsb-release ca-certificates wget gnupg
+RUN apt update && apt install -y apt-transport-https lsb-release ca-certificates wget gnupg
 
 RUN echo "deb     [signed-by=/usr/share/keyrings/tor-archive-keyring.gpg] https://deb.torproject.org/torproject.org <DISTRIBUTION> main" >> /etc/apt/sources.list.d/tor.list
 
@@ -14,11 +12,7 @@ ADD A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89.asc .
 
 RUN cat A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89.asc | gpg --dearmor | tee /usr/share/keyrings/tor-archive-keyring.gpg
 
-RUN apt update
-
-RUN apt install -y tor deb.torproject.org-keyring
-
-RUN apt install -y obfs4proxy
+RUN apt update && apt install -y tor deb.torproject.org-keyring obfs4proxy
 
 ADD hidden_service /var/lib/tor/hidden_service
 
