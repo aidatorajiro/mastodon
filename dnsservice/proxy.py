@@ -191,7 +191,7 @@ if __name__ == '__main__':
                    help="Local proxy listen address (default:all)")
     p.add_argument("--upstream_local", default="172.12.34.56:53",
                    metavar="<dns server:port>",
-                   help="Local Upstream DNS server:port. For local lookup domains. (default:172.12.34.56:53)")
+                   help="Local Upstream DNS server:port. For local lookup domains. (default:172.19.34.56:53)")
     p.add_argument("--upstream_tor", default="127.0.0.1:53",
                    metavar="<dns server:port>",
                    help="Tor Upstream DNS server:port. For .onion domains. (default:127.0.0.1:53)")
