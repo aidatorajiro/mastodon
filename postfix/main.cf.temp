@@ -20,6 +20,7 @@ mailbox_command = procmail -a "$EXTENSION"
 mailbox_size_limit =
 recipient_delimiter = +
 inet_interfaces = all
+home_mailbox = Maildir/
 # smtpd_sasl_local_domain =
 # smtpd_sasl_auth_enable = yes
 # smtpd_sasl_security_options = noanonymous
