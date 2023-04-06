@@ -18,8 +18,6 @@ id:
           disable: Cegah pengguna menggunakan akun mereka, tetapi jangan menghapus atau menyembunyikan konten mereka.
           none: Gunakan ini untuk mengirim peringatan kepada pengguna, tanpa memicu tindakan lainnya.
           sensitive: Paksa semua lampiran media pengguna sebagai sensitif.
-          silence: Cegah pengguna agar tidak dapat memposting dengan visibilitas publik, sembunyikan postingan dan notifikasi mereka dari orang yang tidak mengikuti mereka.
-          suspend: Cegah interaksi apapun dari/ke akun ini dan hapus kontennya. Dapat dikembalikan selama 30 hari.
         warning_preset_id: Opsional. Anda tetap dapat menambahkan teks kustom pada akhir preset
       announcement:
         all_day: Saat dicentang, hanya tanggal dalam rentang waktu tertentu yang akan ditampilkan
@@ -66,6 +64,8 @@ id:
       email_domain_block:
         domain: Ini bisa berupa nama domain yang tampil di alamat email atau data MX yang memakainya. Mereka akan diperiksa saat mendaftar.
         with_dns_records: Usaha untuk menyelesaikan data DNS domain yang diberikan akan dilakukan dan hasilnya akan masuk daftar hitam
+      featured_tag:
+        name: 'Ini adalah beberapa tagar yang sering Anda gunakan:'
       filters:
         action: Pilih tindakan apa yang dilakukan ketika sebuah kiriman cocok dengan saringan
         actions:

@@ -64,6 +64,7 @@ class Account < ApplicationRecord
   USERNAME_RE   = /[a-z0-9_]+([a-z0-9_\.-]+[a-z0-9_]+)?/i
   MENTION_RE    = /(?<=^|[^\/[:word:]])@((#{USERNAME_RE})(?:@[[:word:]\.\-]+[[:word:]]+)?)/i
   URL_PREFIX_RE = /\Ahttp(s?):\/\/[^\/]+/
+  USERNAME_ONLY_RE = /\A#{USERNAME_RE}\z/i
 
   include Attachmentable
   include AccountAssociations
@@ -83,8 +84,8 @@ class Account < ApplicationRecord
   validates :username, presence: true
   validates_with UniqueUsernameValidator, if: -> { will_save_change_to_username? }
 
-  # Remote user validations
-  validates :username, format: { with: /\A#{USERNAME_RE}\z/i }, if: -> { !local? && will_save_change_to_username? }
+  # Remote user validations, also applies to internal actors
+  validates :username, format: { with: USERNAME_ONLY_RE }, if: -> { (!local? || actor_type == 'Application') && will_save_change_to_username? }
 
   # Local user validations
   validates :username, format: { with: /\A[a-z0-9_]+\z/i }, length: { maximum: 30 }, if: -> { local? && will_save_change_to_username? && actor_type != 'Application' }
@@ -106,7 +107,7 @@ class Account < ApplicationRecord
   scope :bots, -> { where(actor_type: %w(Application Service)) }
   scope :groups, -> { where(actor_type: 'Group') }
   scope :alphabetic, -> { order(domain: :asc, username: :asc) }
-  scope :matches_username, ->(value) { where(arel_table[:username].matches("#{value}%")) }
+  scope :matches_username, ->(value) { where('lower((username)::text) LIKE lower(?)', "#{value}%") }
   scope :matches_display_name, ->(value) { where(arel_table[:display_name].matches("#{value}%")) }
   scope :matches_domain, ->(value) { where(arel_table[:domain].matches("%#{value}%")) }
   scope :without_unapproved, -> { left_outer_joins(:user).remote.or(left_outer_joins(:user).merge(User.approved.confirmed)) }
@@ -255,7 +256,7 @@ class Account < ApplicationRecord
     update!(memorial: true)
   end
 
-  def trendable
+  def trendable?
     boolean_with_default('trendable', Setting.trendable_by_default)
   end
 
@@ -295,7 +296,7 @@ class Account < ApplicationRecord
 
   def fields
     (self[:fields] || []).map do |f|
-      Field.new(self, f)
+      Account::Field.new(self, f)
     rescue
       nil
     end.compact
@@ -340,9 +341,15 @@ class Account < ApplicationRecord
 
   def save_with_optional_media!
     save!
-  rescue ActiveRecord::RecordInvalid
-    self.avatar = nil
-    self.header = nil
+  rescue ActiveRecord::RecordInvalid => e
+    errors = e.record.errors.errors
+    errors.each do |err|
+      if err.attribute == :avatar
+        self.avatar = nil
+      elsif err.attribute == :header
+        self.header = nil
+      end
+    end
 
     save!
   end
@@ -399,48 +406,6 @@ class Account < ApplicationRecord
 
   def requires_review_notification?
     requires_review? && !requested_review?
-  end
-
-  class Field < ActiveModelSerializers::Model
-    attributes :name, :value, :verified_at, :account
-
-    def initialize(account, attributes)
-      @original_field = attributes
-      string_limit = account.local? ? 255 : 2047
-      super(
-        account:     account,
-        name:        attributes['name'].strip[0, string_limit],
-        value:       attributes['value'].strip[0, string_limit],
-        verified_at: attributes['verified_at']&.to_datetime,
-      )
-    end
-
-    def verified?
-      verified_at.present?
-    end
-
-    def value_for_verification
-      @value_for_verification ||= begin
-        if account.local?
-          value
-        else
-          ActionController::Base.helpers.strip_tags(value)
-        end
-      end
-    end
-
-    def verifiable?
-      value_for_verification.present? && value_for_verification.start_with?('http://', 'https://')
-    end
-
-    def mark_verified!
-      self.verified_at = Time.now.utc
-      @original_field['verified_at'] = verified_at
-    end
-
-    def to_h
-      { name: name, value: value, verified_at: verified_at }
-    end
   end
 
   class << self
@@ -548,7 +513,8 @@ class Account < ApplicationRecord
         <<-SQL.squish
           SELECT
             accounts.*,
-            (count(f.id) + 1) * #{BOOST} * ts_rank_cd(#{TEXTSEARCH}, to_tsquery('simple', :tsquery), 32) AS rank
+            #{BOOST} * ts_rank_cd(#{TEXTSEARCH}, to_tsquery('simple', :tsquery), 32) AS rank,
+            count(f.id) AS followed
           FROM accounts
           LEFT OUTER JOIN follows AS f ON (accounts.id = f.account_id AND f.target_account_id = :id) OR (accounts.id = f.target_account_id AND f.account_id = :id)
           LEFT JOIN users ON accounts.id = users.account_id
@@ -558,7 +524,7 @@ class Account < ApplicationRecord
             AND accounts.moved_to_account_id IS NULL
             AND (accounts.domain IS NOT NULL OR (users.approved = TRUE AND users.confirmed_at IS NOT NULL))
           GROUP BY accounts.id, s.id
-          ORDER BY rank DESC
+          ORDER BY followed DESC, rank DESC
           LIMIT :limit OFFSET :offset
         SQL
       end

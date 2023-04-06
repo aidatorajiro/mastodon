@@ -69,7 +69,7 @@ services:
 
   web:
     build: .
-    image: tootsuite/mastodon
+    image: ghcr.io/mastodon/mastodon
     restart: always
     env_file: .env.production
     command: bash -c "sudo /bin/redsocks_prepare.sh; rm -f /mastodon/tmp/pids/server.pid; bundle exec rails s -p 3000"
@@ -90,7 +90,7 @@ services:
 
   streaming:
     build: .
-    image: tootsuite/mastodon
+    image: ghcr.io/mastodon/mastodon
     restart: always
     env_file: .env.production
     command: bash -c "sudo /bin/redsocks_prepare.sh; node ./streaming"
@@ -109,7 +109,7 @@ services:
 
   sidekiq:
     build: .
-    image: tootsuite/mastodon
+    image: ghcr.io/mastodon/mastodon
     restart: always
     env_file: .env.production
     command: bash -c "sudo /bin/redsocks_prepare.sh; bundle exec sidekiq"

@@ -58,24 +58,24 @@ class HomeTimeline extends React.PureComponent {
     } else {
       dispatch(addColumn('HOME', {}));
     }
-  }
+  };
 
   handleMove = (dir) => {
     const { columnId, dispatch } = this.props;
     dispatch(moveColumn(columnId, dir));
-  }
+  };
 
   handleHeaderClick = () => {
     this.column.scrollTop();
-  }
+  };
 
   setRef = c => {
     this.column = c;
-  }
+  };
 
   handleLoadMore = maxId => {
     this.props.dispatch(expandHomeTimeline({ maxId }));
-  }
+  };
 
   componentDidMount () {
     setTimeout(() => this.props.dispatch(fetchAnnouncements()), 700);
@@ -114,7 +114,7 @@ class HomeTimeline extends React.PureComponent {
   handleToggleAnnouncementsClick = (e) => {
     e.stopPropagation();
     this.props.dispatch(toggleShowAnnouncements());
-  }
+  };
 
   render () {
     const { intl, hasUnread, columnId, multiColumn, hasAnnouncements, unreadAnnouncements, showAnnouncements } = this.props;
@@ -130,7 +130,6 @@ class HomeTimeline extends React.PureComponent {
           className={classNames('column-header__button', { 'active': showAnnouncements })}
           title={intl.formatMessage(showAnnouncements ? messages.hide_announcements : messages.show_announcements)}
           aria-label={intl.formatMessage(showAnnouncements ? messages.hide_announcements : messages.show_announcements)}
-          aria-pressed={showAnnouncements ? 'true' : 'false'}
           onClick={this.handleToggleAnnouncementsClick}
         >
           <IconWithBadge id='bullhorn' count={unreadAnnouncements} />

@@ -21,12 +21,12 @@ export default class ColumnSettings extends React.PureComponent {
     onRequestNotificationPermission: PropTypes.func,
     alertsEnabled: PropTypes.bool,
     browserSupport: PropTypes.bool,
-    browserPermission: PropTypes.bool,
+    browserPermission: PropTypes.string,
   };
 
   onPushChange = (path, checked) => {
     this.props.onChange(['push', ...path], checked);
-  }
+  };
 
   render () {
     const { settings, pushSettings, onChange, onClear, alertsEnabled, browserSupport, browserPermission, onRequestNotificationPermission } = this.props;
