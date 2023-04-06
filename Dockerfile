@@ -48,8 +48,6 @@ COPY --link --from=ruby /opt/ruby /opt/ruby
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
-RUN gem install bundler
-
 RUN apt install -y redsocks iptables sudo curl dnsutils
 
 # RUN VERSION=$(curl -s https://api.github.com/repos/AdguardTeam/dnsproxy/releases/latest | grep tag_name | cut -d '"' -f 4) && \
